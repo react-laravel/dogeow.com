@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useState } from "react";
 import projects from "../resources/projects.json";
 
 const DOING_WITH_DOT_MAX_LENGTH = 4; // doing 带小数点后的最大长度（doing 为一个单位），比如 「正在学习 Golang...」，那么长度为 4，其中小数点最长为 3 位。
@@ -17,26 +17,52 @@ const getDoingText = (doings, timestamp) => {
   return `正在${doings[doingIndex]}.${".".repeat(dotCount)}`;
 };
 
+// 欢迎组件
+const Welcome = () => (
+  <div className="flex justify-center text-4xl">
+    <span role="img">👏</span>欢迎<span role="img">👏</span>
+  </div>
+);
+
+// 项目卡片组件
+const ProjectCard = ({ project }) => (
+  <a
+    className="block p-4 hover:bg-white hover:bg-opacity-20 cursor-pointer"
+    href={project.link}
+    key={project.id}
+    rel="noopener noreferrer"
+  >
+    <div className="flex flex-col items-center space-y-4">
+      <img width="40" src={project.image} alt={project.title} />
+      <div>{project.title}</div>
+    </div>
+  </a>
+);
+
+// 项目导航组件
+const ProjectNav = ({ projects }) => (
+  <nav className="grid gap-2 grid-cols-2 md:grid-cols-4">
+    {projects.map((project) => (
+      <ProjectCard key={project.id} project={project} />
+    ))}
+  </nav>
+);
+
+// 正在进行的活动组件
+const CurrentActivity = ({ doing }) => (
+  <div className="flex justify-center text">
+    <a
+      href="https://lab.dogeow.com/project/1"
+      target="_blank"
+      rel="noopener noreferrer"
+    >
+      {doing}
+    </a>
+  </div>
+);
+
 export default function Main({ doings }) {
   const [doing, setDoing] = useState("");
-
-  const projectElements = useMemo(
-    () =>
-      projects.map((project) => (
-        <a
-          className="block p-4 hover:bg-white hover:bg-opacity-20 cursor-pointer"
-          href={project.link}
-          key={project.id}
-          rel="noopener noreferrer"
-        >
-          <div className="flex flex-col items-center space-y-4">
-            <img width="40" src={project.image} alt={project.title} />
-            <div>{project.title}</div>
-          </div>
-        </a>
-      )),
-    []
-  );
 
   useEffect(() => {
     if (!doings || doings.length === 0) {
@@ -53,21 +79,9 @@ export default function Main({ doings }) {
 
   return (
     <main className="mx-auto space-y-8">
-      <div className="flex justify-center text-4xl">
-        <span role="img">👏</span>欢迎<span role="img">👏</span>
-      </div>
-      <nav className="grid gap-2 grid-cols-2 md:grid-cols-4">
-        {projectElements}
-      </nav>
-      <div className="flex justify-center text">
-        <a
-          href="https://lab.dogeow.com/project/1"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          {doing}
-        </a>
-      </div>
+      <Welcome />
+      <ProjectNav projects={projects} />
+      <CurrentActivity doing={doing} />
     </main>
   );
 }

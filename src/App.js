@@ -14,6 +14,9 @@ export default () => {
       .then((res) => res.json())
       .then((data) => {
         setInfo(data);
+      })
+      .catch((error) => {
+        console.error("获取数据失败:", error);
       });
   }, []);
 
