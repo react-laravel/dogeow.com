@@ -1,7 +1,7 @@
 import React from "react";
 import ExternalLink from "../components/ExternalLink";
 import Record from "../resources/ICP";
-import TailwindCSS from "../resources/TailwindCSS";
+import TailwindCSS from "../resources/TailwindCSS.jsx";
 import FriendLink from "../components/FriendLink";
 
 // 渲染友情链接组件
