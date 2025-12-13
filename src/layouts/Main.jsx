@@ -17,12 +17,41 @@ const getDoingText = (doings, timestamp) => {
   return `正在${doings[doingIndex]}.${".".repeat(dotCount)}`;
 };
 
+// 根据时间获取问候语
+const getGreeting = () => {
+  const hour = new Date().getHours();
+  if (hour >= 0 && hour < 5) {
+    return "夜深了";
+  } else if (hour >= 5 && hour < 9) {
+    return "早上好";
+  } else if (hour >= 9 && hour < 14) {
+    return "中午好";
+  } else if (hour >= 14 && hour < 18) {
+    return "傍晚好";
+  } else {
+    return "晚上好";
+  }
+};
+
 // 欢迎组件
-const Welcome = () => (
-  <div className="flex justify-center text-4xl">
-    <span role="img">👏</span>欢迎<span role="img">👏</span>
-  </div>
-);
+const Welcome = () => {
+  const [greeting, setGreeting] = useState(getGreeting());
+
+  useEffect(() => {
+    // 每分钟更新一次问候语
+    const intervalId = setInterval(() => {
+      setGreeting(getGreeting());
+    }, 60000); // 每分钟检查一次
+
+    return () => clearInterval(intervalId);
+  }, []);
+
+  return (
+    <div className="flex justify-center text-4xl">
+      {greeting}
+    </div>
+  );
+};
 
 // 项目卡片组件
 const ProjectCard = ({ project }) => (
