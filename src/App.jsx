@@ -8,7 +8,11 @@ export default () => {
     links: [],
   });
 
+  // 开关：设置为 true 时才会执行 fetch
+  const fetchEnabled = false; // 更改为 true 以再次启用
+
   useEffect(() => {
+    if (!fetchEnabled) return;
     fetch("https://api.dogeow.com/about-me/others")
       .then((res) => res.json())
       .then((data) => {
@@ -17,7 +21,7 @@ export default () => {
       .catch((error) => {
         console.error("获取数据失败:", error);
       });
-  }, []);
+  }, [fetchEnabled]);
 
   return (
     <div
