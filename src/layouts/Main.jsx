@@ -78,7 +78,7 @@ export default function Main({ doings }) {
   }, [doings]);
 
   return (
-    <main className="mx-auto space-y-8 flex-grow content-center">
+    <main className="mx-auto space-y-8 flex-grow flex flex-col justify-center px-4">
       <Welcome />
       <ProjectNav projects={projects} />
       <CurrentActivity doing={doing} />

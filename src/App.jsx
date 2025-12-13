@@ -26,7 +26,7 @@ export default () => {
   return (
     <div
       id="app"
-      className="min-w-screen min-h-screen flex flex-col justify-between bg-random bg-cover bg-center transition-opacity duration-700 text-sm text-gray-200"
+      className="min-w-screen h-dvh flex flex-col justify-between bg-random bg-cover bg-center transition-opacity duration-700 text-sm text-gray-200 overflow-hidden"
     >
       <Main doings={info.doings} />
       <Footer links={info.links} />
