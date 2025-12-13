@@ -43,7 +43,7 @@ const Footer = ({ links, tailwindCSSLink }) => {
     <footer className="flex flex-col items-center text-gray-400">
       <FriendLinksSection links={links} />
 
-      <div className="p-2 flex md:flex-row flex-col space-x-3">
+      <div className="p-2 flex md:flex-row flex-col items-center justify-center space-x-3">
         {/* <PoweredBySection tailwindCSSLink={tailwindCSSLink} /> */}
         <BeianSection />
       </div>

@@ -12,15 +12,15 @@ const BackgroundImageInfo = ({ imageName }) => {
   const bingSearchUrl = `https://www.bing.com/search?q=${encodeURIComponent(displayName)}`;
 
   return (
-    <div className="absolute top-6 right-6 z-10">
+    <div className="flex justify-center pt-6 pb-2">
       <a
         href={bingSearchUrl}
         target="_blank"
         rel="noopener noreferrer"
-        className="inline-flex items-center bg-black bg-opacity-40 hover:bg-opacity-60 text-white px-4 py-2.5 rounded-md text-sm transition-all duration-200 backdrop-blur-sm shadow-lg hover:shadow-xl border border-white border-opacity-20"
+        className="inline-flex items-center bg-black bg-opacity-40 hover:bg-opacity-60 text-white px-2.5 py-1.5 rounded text-xs transition-all duration-200 backdrop-blur-sm shadow-lg hover:shadow-xl border border-white border-opacity-20"
       >
         <svg
-          className="w-4 h-4 mr-2"
+          className="w-3 h-3 mr-1.5"
           fill="none"
           stroke="currentColor"
           viewBox="0 0 24 24"

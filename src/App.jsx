@@ -65,9 +65,9 @@ export default () => {
       className="min-w-screen h-dvh flex flex-col justify-between bg-cover bg-center transition-opacity duration-700 text-sm text-gray-200 overflow-hidden relative"
       style={backgroundStyle}
     >
+      {backgroundImage && <BackgroundImageInfo imageName={backgroundImage.name} />}
       <Main doings={info.doings} />
       <Footer links={info.links} />
-      {backgroundImage && <BackgroundImageInfo imageName={backgroundImage.name} />}
     </div>
   );
 };
