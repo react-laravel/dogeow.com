@@ -12,8 +12,7 @@ const BackgroundImageInfo = ({ imageName }) => {
   const bingSearchUrl = `https://www.bing.com/search?q=${encodeURIComponent(displayName)}`;
 
   return (
-    <div className="flex justify-center pt-6 pb-2">
-      <a
+    <a
         href={bingSearchUrl}
         target="_blank"
         rel="noopener noreferrer"
@@ -34,8 +33,7 @@ const BackgroundImageInfo = ({ imageName }) => {
           />
         </svg>
         <span className="truncate max-w-xs">{displayName}</span>
-      </a>
-    </div>
+    </a>
   );
 };
 

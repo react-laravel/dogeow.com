@@ -1,7 +1,11 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import Main from "./layouts/Main";
 import Footer from "./layouts/Footer";
-import BackgroundImageInfo from "./components/BackgroundImageInfo";
+
+const DEFAULT_INFO = {
+  doings: [],
+  links: [],
+};
 
 // 背景图文件名列表
 const BACKGROUND_IMAGES = [
@@ -19,19 +23,17 @@ const BACKGROUND_IMAGES = [
   "塞尔达荒野之息.jpg",
 ];
 
+const BACKGROUND_IMAGE_BASE_URL = "https://upyun.dogeow.com/wallpaper";
+const ABOUT_ME_API_URL = "https://api.dogeow.com/about-me/others";
+const FETCH_ENABLED = false; // 更改为 true 以再次启用
+
 export default () => {
-  const [info, setInfo] = useState({
-    doings: [],
-    links: [],
-  });
+  const [info, setInfo] = useState(DEFAULT_INFO);
   const [backgroundImage, setBackgroundImage] = useState(null);
 
-  // 开关：设置为 true 时才会执行 fetch
-  const fetchEnabled = false; // 更改为 true 以再次启用
-
   useEffect(() => {
-    if (!fetchEnabled) return;
-    fetch("https://api.dogeow.com/about-me/others")
+    if (!FETCH_ENABLED) return;
+    fetch(ABOUT_ME_API_URL)
       .then((res) => res.json())
       .then((data) => {
         setInfo(data);
@@ -39,12 +41,12 @@ export default () => {
       .catch((error) => {
         console.error("获取数据失败:", error);
       });
-  }, [fetchEnabled]);
+  }, []);
 
   // 随机选择一张背景图
   useEffect(() => {
     const randomImageName = BACKGROUND_IMAGES[Math.floor(Math.random() * BACKGROUND_IMAGES.length)];
-    const imageUrl = `https://upyun.dogeow.com/wallpaper/${randomImageName}!/fw/1920`;
+    const imageUrl = `${BACKGROUND_IMAGE_BASE_URL}/${randomImageName}!/fw/1920`;
     
     setBackgroundImage({
       url: imageUrl,
@@ -53,11 +55,15 @@ export default () => {
   }, []);
 
   // 构建背景图样式
-  const backgroundStyle = backgroundImage
-    ? {
-        backgroundImage: `linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.3)), url('${backgroundImage.url}')`,
-      }
-    : {};
+  const backgroundStyle = useMemo(
+    () =>
+      backgroundImage
+        ? {
+            backgroundImage: `linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.3)), url('${backgroundImage.url}')`,
+          }
+        : {},
+    [backgroundImage]
+  );
 
   return (
     <div
@@ -65,9 +71,8 @@ export default () => {
       className="min-w-screen h-dvh flex flex-col justify-between bg-cover bg-center transition-opacity duration-700 text-sm text-gray-200 overflow-hidden relative"
       style={backgroundStyle}
     >
-      {backgroundImage && <BackgroundImageInfo imageName={backgroundImage.name} />}
       <Main doings={info.doings} />
-      <Footer links={info.links} />
+      <Footer links={info.links} imageName={backgroundImage?.name} />
     </div>
   );
 };

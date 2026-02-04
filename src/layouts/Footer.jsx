@@ -1,25 +1,15 @@
 import React from "react";
-import ExternalLink from "../components/ExternalLink";
+import ExternalLink from "../components/common/ExternalLink";
 import Record from "../resources/ICP";
-import TailwindCSS from "../resources/TailwindCSS.jsx";
-import FriendLink from "../components/FriendLink";
+import FriendLinks from "../components/home/FriendLinks";
+import BackgroundImageInfo from "../components/common/BackgroundImageInfo";
 
 // 渲染友情链接组件
 const FriendLinksSection = ({ links }) => (
-  <FriendLink
+  <FriendLinks
     links={links}
     className="p-2 flex flex-row justify-center space-x-5"
   />
-);
-
-// 渲染技术支持信息
-const PoweredBySection = ({ tailwindCSSLink }) => (
-  <div className="flex items-center space-x-1">
-    <span className="pl-3">Powered by</span>
-    <ExternalLink href={tailwindCSSLink}>
-      <TailwindCSS />
-    </ExternalLink>
-  </div>
 );
 
 // 渲染备案信息
@@ -38,13 +28,17 @@ const BeianSection = () => (
   </>
 );
 
-const Footer = ({ links, tailwindCSSLink }) => {
+const Footer = ({ links, imageName }) => {
   return (
     <footer className="flex flex-col items-center text-gray-400">
+      {imageName && (
+        <div className="pb-2">
+          <BackgroundImageInfo imageName={imageName} />
+        </div>
+      )}
       <FriendLinksSection links={links} />
 
       <div className="p-2 flex md:flex-row flex-col items-center justify-center space-x-3">
-        {/* <PoweredBySection tailwindCSSLink={tailwindCSSLink} /> */}
         <BeianSection />
       </div>
     </footer>
