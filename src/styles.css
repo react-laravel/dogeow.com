@@ -1,0 +1,202 @@
+:root {
+  --page-background: linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.3));
+  --text-primary: #e5e7eb;
+  --text-secondary: rgba(229, 231, 235, 0.86);
+  --text-muted: rgba(156, 163, 175, 0.95);
+  --border: rgba(255, 255, 255, 0.08);
+  --card-hover: rgba(255, 255, 255, 0.18);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  background: #020617;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  color: var(--text-primary);
+  font-family: "Avenir Next", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+  font-size: 14px;
+  background-image: var(--page-background);
+  background-position: center;
+  background-size: cover;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+img {
+  display: block;
+}
+
+.page-shell {
+  position: relative;
+  min-height: 100vh;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  overflow: hidden;
+}
+
+.page-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.28));
+  pointer-events: none;
+}
+
+.hero,
+.site-footer {
+  position: relative;
+  z-index: 1;
+}
+
+.hero {
+  width: min(840px, 100%);
+  margin: 0 auto;
+  padding: 0 0 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+  justify-content: center;
+  align-items: center;
+  flex: 1;
+}
+
+.greeting {
+  margin: 0;
+  font-size: clamp(2rem, 6vw, 2.5rem);
+  line-height: 1.1;
+  font-weight: 400;
+  text-align: center;
+}
+
+.project-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  width: min(760px, 100%);
+}
+
+.project-card {
+  display: block;
+  padding: 16px;
+  border-radius: 6px;
+  border: 1px solid transparent;
+  transition: background-color 160ms ease, border-color 160ms ease;
+}
+
+.project-card:hover,
+.project-card:focus-visible {
+  background: var(--card-hover);
+  border-color: var(--border);
+}
+
+.project-card > span,
+.project-card > img {
+  margin-inline: auto;
+}
+
+.project-card img {
+  width: 40px;
+  height: auto;
+  max-height: 40px;
+  object-fit: contain;
+}
+
+.project-card span {
+  display: block;
+  margin-top: 16px;
+  text-align: center;
+  color: var(--text-primary);
+}
+
+.doing {
+  margin: 0;
+  min-height: 1.5em;
+  text-align: center;
+  color: var(--text-secondary);
+}
+
+.site-footer {
+  width: min(840px, 100%);
+  margin: 0 auto;
+  display: grid;
+  gap: 8px;
+  justify-items: center;
+  text-align: center;
+  color: var(--text-muted);
+}
+
+.wallpaper-info,
+.friend-links {
+  margin: 0;
+  font-size: 12px;
+}
+
+.wallpaper-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 11px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 6px;
+  background: rgba(0, 0, 0, 0.35);
+  color: #fff;
+  backdrop-filter: blur(8px);
+  transition: background-color 160ms ease, border-color 160ms ease;
+}
+
+.wallpaper-button:hover,
+.wallpaper-button:focus-visible {
+  background: rgba(0, 0, 0, 0.55);
+  border-color: rgba(255, 255, 255, 0.32);
+}
+
+.wallpaper-button__label {
+  max-width: min(40vw, 240px);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.friend-links {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.record-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 16px;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+}
+
+.record-links a {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+@media (min-width: 720px) {
+  .project-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 640px) {
+  .hero {
+    gap: 24px;
+  }
+}

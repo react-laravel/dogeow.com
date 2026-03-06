@@ -1,9 +1,17 @@
 Personal Website Homepage
 
-## 环境
+当前是一个基于 `Vite` 的无框架静态入口页。
 
-- Node 16
+## 开发
 
-## Todo
+```bash
+npm install
+npm run dev
+```
 
-- 图片改为云存储
+## 构建
+
+```bash
+vite build --base ./
+vite preview --host 
+```
