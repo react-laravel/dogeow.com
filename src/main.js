@@ -33,24 +33,48 @@ function setGreeting() {
 }
 
 function setBackground() {
-  const name = backgroundImages[Math.floor(Math.random() * backgroundImages.length)];
+  const name =
+    backgroundImages[Math.floor(Math.random() * backgroundImages.length)];
   const url = `${backgroundBaseUrl}/${name}!/fw/1920`;
-  document.documentElement.style.setProperty(
-    "--page-background",
-    `linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.3)), url("${url}")`
-  );
+
+  const img = new Image();
+  img.src = url;
+  img.onload = () => {
+    document.documentElement.style.setProperty(
+      "--page-background",
+      `linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.3)), url("${url}")`
+    );
+    document.body.classList.add("bg-loaded");
+  };
 
   const info = document.querySelector("#wallpaper-info");
   if (info) {
     const displayName = name.replace(/\.(jpg|jpeg|png|gif|webp|bmp)$/i, "");
-    const searchUrl = `https://www.bing.com/search?q=${encodeURIComponent(displayName)}`;
+    const searchUrl = `https://www.bing.com/search?q=${encodeURIComponent(
+      displayName
+    )}`;
+
     info.hidden = false;
-    info.innerHTML = `
-      <a class="wallpaper-button" href="${searchUrl}" target="_blank" rel="noopener noreferrer">
-        <span class="wallpaper-button__label">${displayName}</span>
-        <span class="wallpaper-button__icon" aria-hidden="true">🔍</span>
-      </a>
-    `;
+    info.innerHTML = "";
+
+    const link = document.createElement("a");
+    link.className = "wallpaper-button";
+    link.href = searchUrl;
+    link.target = "_blank";
+    link.rel = "noopener noreferrer";
+
+    const label = document.createElement("span");
+    label.className = "wallpaper-button__label";
+    label.textContent = displayName;
+
+    const icon = document.createElement("span");
+    icon.className = "wallpaper-button__icon";
+    icon.setAttribute("aria-hidden", "true");
+    icon.innerHTML =
+      '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>';
+
+    link.append(label, icon);
+    info.append(link);
   }
 }
 
@@ -68,7 +92,14 @@ function startDoingTicker() {
     const doingIndex = Math.floor(doingAndDotIndex / maxDotCount);
     const dotCount = doingAndDotIndex % maxDotCount;
     doingNode.hidden = false;
-    doingNode.innerHTML = `<a href="https://lab.dogeow.com/project/1" rel="noopener noreferrer">正在${doings[doingIndex]}.${".".repeat(dotCount)}</a>`;
+
+    doingNode.innerHTML = "";
+    const link = document.createElement("a");
+    link.href = "https://lab.dogeow.com/project/1";
+    link.rel = "noopener noreferrer";
+    link.target = "_blank";
+    link.textContent = `正在${doings[doingIndex]}${".".repeat(dotCount + 1)}`;
+    doingNode.append(link);
   };
 
   render();
@@ -82,13 +113,21 @@ function renderFriendLinks() {
   if (!node) return;
 
   node.hidden = false;
-  node.innerHTML = [
-    "<span>友情链接：</span>",
-    ...friendLinks.map(
-      (link) =>
-        `<a href="${link.url}" rel="noopener noreferrer" referrerpolicy="no-referrer">${link.title}</a>`
-    ),
-  ].join("");
+  node.innerHTML = "";
+
+  const prefix = document.createElement("span");
+  prefix.textContent = "友情链接：";
+  node.append(prefix);
+
+  for (const link of friendLinks) {
+    const a = document.createElement("a");
+    a.href = link.url;
+    a.rel = "noopener noreferrer";
+    a.referrerPolicy = "no-referrer";
+    a.target = "_blank";
+    a.textContent = link.title;
+    node.append(a);
+  }
 }
 
 setGreeting();

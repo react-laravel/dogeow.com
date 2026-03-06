@@ -5,7 +5,9 @@
   "scripts": {
     "dev": "vite --host",
     "build": "vite build --base ./",
-    "preview": "vite preview --host"
+    "preview": "vite preview --host",
+    "format": "prettier --write .",
+    "format:check": "prettier --check ."
   },
   "browserslist": {
     "production": [
@@ -21,6 +23,6 @@
   },
   "devDependencies": {
     "vite": "^5.1.0",
-    "prettier": "^2.5.0"
+    "prettier": "^3.0.0"
   }
 }

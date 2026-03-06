@@ -24,6 +24,21 @@ body {
   background-image: var(--page-background);
   background-position: center;
   background-size: cover;
+  opacity: 1;
+  transition: background-image 0.6s ease;
+}
+
+body.bg-loaded {
+  animation: fade-in 0.6s ease;
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0.85;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
 a {
@@ -167,6 +182,11 @@ img {
   white-space: nowrap;
 }
 
+.wallpaper-button__icon {
+  display: inline-flex;
+  align-items: center;
+}
+
 .friend-links {
   display: flex;
   gap: 10px;
@@ -198,5 +218,15 @@ img {
 @media (max-width: 640px) {
   .hero {
     gap: 24px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
   }
 }
