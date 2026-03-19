@@ -4,7 +4,7 @@
 
 ## 特性
 
-- 随机背景壁纸（从又拍云 CDN 加载）
+- 随机背景壁纸
 - 根据时间显示问候语（早上好/中午好/下午好/傍晚好/晚上好/夜深了）
 - 响应式设计，支持移动端和桌面端
 
@@ -44,8 +44,10 @@ npm run preview
 │   ├── logo80.png
 │   └── robots.txt
 ├── src/
+│   ├── config.js       # 配置文件
 │   ├── main.js         # 入口脚本
 │   └── styles.css      # 全局样式
+|   └── utils.js        # 工具函数
 ├── index.html          # HTML 入口
 ├── package.json
 └── README.md
@@ -55,17 +57,16 @@ npm run preview
 
 ### 添加背景图片
 
-编辑 `src/main.js` 中的 `backgroundImages` 数组：
+编辑 `src/config.js` 中的 `backgroundImages` 数组：
 
 ```javascript
+const backgroundBaseUrl = "https://your-image-host.com/images";
 const backgroundImages = [
   "AIR.jpg",
   "你的名字.jpg",
   // 添加更多图片
 ];
 ```
-
-图片需上传到又拍云 CDN，路径格式为 `{baseUrl}/{imageName}`。
 
 ### 修改问候语
 
