@@ -1,17 +1,72 @@
-Personal Website Homepage
+# Personal Website Homepage
 
-当前是一个基于 `Vite` 的无框架静态入口页。
+基于 Vite 的静态个人入口页，作为 DogeOW 的个人网站首页。
+
+## 特性
+
+- 随机背景壁纸（从又拍云 CDN 加载）
+- 根据时间显示问候语（早上好/中午好/下午好/傍晚好/晚上好/夜深了）
+- 响应式设计，支持移动端和桌面端
+
+## 技术栈
+
+- Vite 5 - 构建工具
+- 原生 JavaScript - 无框架
+- CSS3 - 样式
 
 ## 开发
 
 ```bash
+# 安装依赖
 npm install
+
+# 启动开发服务器
 npm run dev
 ```
 
 ## 构建
 
 ```bash
-vite build --base ./
-vite preview --host 
+# 构建生产版本
+npm run build
+
+# 预览构建结果
+npm run preview
 ```
+
+## 目录结构
+
+```plaintext
+/
+├── public/              # 静态资源
+│   ├── favavicon.ico
+│   ├── logo192.png
+│   ├── logo80.png
+│   └── robots.txt
+├── src/
+│   ├── main.js         # 入口脚本
+│   └── styles.css      # 全局样式
+├── index.html          # HTML 入口
+├── package.json
+└── README.md
+```
+
+## 自定义
+
+### 添加背景图片
+
+编辑 `src/main.js` 中的 `backgroundImages` 数组：
+
+```javascript
+const backgroundImages = [
+  "AIR.jpg",
+  "你的名字.jpg",
+  // 添加更多图片
+];
+```
+
+图片需上传到又拍云 CDN，路径格式为 `{baseUrl}/{imageName}`。
+
+### 修改问候语
+
+编辑 `getGreeting()` 函数可自定义问候语逻辑。
