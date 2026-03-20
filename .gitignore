@@ -11,6 +11,9 @@
 # production
 /build
 /dist
+/releases
+/current
+/.build-staging.*
 
 # misc
 .DS_Store
