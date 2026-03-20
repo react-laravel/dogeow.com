@@ -18,20 +18,20 @@
 
 ```bash
 # 安装依赖
-npm install
+yarn
 
 # 启动开发服务器
-npm run dev
+yarn dev
 ```
 
 ## 构建
 
 ```bash
 # 构建生产版本
-npm run build
+yarn build
 
 # 预览构建结果
-npm run preview
+yarn preview
 ```
 
 ## 目录结构
@@ -39,7 +39,7 @@ npm run preview
 ```plaintext
 /
 ├── public/              # 静态资源
-│   ├── favavicon.ico
+│   ├── favicon.ico
 │   ├── logo192.png
 │   ├── logo80.png
 │   └── robots.txt
