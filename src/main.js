@@ -1,57 +1,116 @@
 import { config } from "./config.js";
 import { getGreeting } from "./utils.js";
 
+const BACKGROUND_MIN_SIZE = 960;
+const BACKGROUND_MAX_SIZE = 2560;
+const BACKGROUND_SIZE_STEP = 160;
+const BACKGROUND_DPR_CAP = 2;
+
+let currentBackgroundName = "";
+let currentBackgroundUrl = "";
+let backgroundResizeTimer = 0;
+
+function roundUpToStep(value, step) {
+  return Math.ceil(value / step) * step;
+}
+
+function getBackgroundRequestSize() {
+  const viewportWidth = Math.max(
+    window.innerWidth || 0,
+    document.documentElement.clientWidth || 0,
+  );
+  const viewportHeight = Math.max(
+    window.innerHeight || 0,
+    document.documentElement.clientHeight || 0,
+  );
+  const devicePixelRatio = Math.min(window.devicePixelRatio || 1, BACKGROUND_DPR_CAP);
+  const longestEdge = Math.max(viewportWidth, viewportHeight);
+  const targetSize = longestEdge * devicePixelRatio;
+
+  return Math.min(
+    BACKGROUND_MAX_SIZE,
+    Math.max(BACKGROUND_MIN_SIZE, roundUpToStep(targetSize, BACKGROUND_SIZE_STEP)),
+  );
+}
+
+function getBackgroundUrl(name) {
+  return `${config.backgroundBaseUrl}/${name}!/max/${getBackgroundRequestSize()}`;
+}
+
+function renderWallpaperInfo(name) {
+  const info = document.querySelector("#wallpaper-info");
+  if (!info) return;
+
+  const displayName = name.replace(/\.(jpg|jpeg|png|gif|webp|bmp)$/i, "");
+  const searchUrl = `https://www.bing.com/search?q=${encodeURIComponent(
+    displayName,
+  )}`;
+
+  info.hidden = false;
+  info.innerHTML = "";
+
+  const link = document.createElement("a");
+  link.className = "wallpaper-button";
+  link.href = searchUrl;
+  link.target = "_blank";
+  link.rel = "noopener noreferrer";
+
+  const label = document.createElement("span");
+  label.className = "wallpaper-button__label";
+  label.textContent = displayName;
+
+  const icon = document.createElement("span");
+  icon.className = "wallpaper-button__icon";
+  icon.setAttribute("aria-hidden", "true");
+  icon.innerHTML =
+    '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>';
+
+  link.append(label, icon);
+  info.append(link);
+}
+
 function setGreeting() {
   const greetingNode = document.querySelector("#greeting");
   if (greetingNode) greetingNode.textContent = getGreeting();
 }
 
-function setBackground() {
-  const name =
+function setBackground(name = "") {
+  const nextBackgroundName =
+    name ||
     config.backgroundImages[
       Math.floor(Math.random() * config.backgroundImages.length)
     ];
-  const url = `${config.backgroundBaseUrl}/${name}!/fw/1920`;
+  const url = getBackgroundUrl(nextBackgroundName);
+
+  currentBackgroundName = nextBackgroundName;
+  renderWallpaperInfo(nextBackgroundName);
+
+  if (url === currentBackgroundUrl) return;
+
+  currentBackgroundUrl = url;
 
   const img = new Image();
   img.src = url;
   img.onload = () => {
+    if (url !== currentBackgroundUrl) return;
+
     document.documentElement.style.setProperty(
       "--page-background",
       `linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.3)), url("${url}")`,
     );
     document.body.classList.add("bg-loaded");
   };
+}
 
-  const info = document.querySelector("#wallpaper-info");
-  if (info) {
-    const displayName = name.replace(/\.(jpg|jpeg|png|gif|webp|bmp)$/i, "");
-    const searchUrl = `https://www.bing.com/search?q=${encodeURIComponent(
-      displayName,
-    )}`;
+function bindBackgroundResize() {
+  window.addEventListener("resize", () => {
+    if (!currentBackgroundName) return;
 
-    info.hidden = false;
-    info.innerHTML = "";
-
-    const link = document.createElement("a");
-    link.className = "wallpaper-button";
-    link.href = searchUrl;
-    link.target = "_blank";
-    link.rel = "noopener noreferrer";
-
-    const label = document.createElement("span");
-    label.className = "wallpaper-button__label";
-    label.textContent = displayName;
-
-    const icon = document.createElement("span");
-    icon.className = "wallpaper-button__icon";
-    icon.setAttribute("aria-hidden", "true");
-    icon.innerHTML =
-      '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>';
-
-    link.append(label, icon);
-    info.append(link);
-  }
+    window.clearTimeout(backgroundResizeTimer);
+    backgroundResizeTimer = window.setTimeout(() => {
+      setBackground(currentBackgroundName);
+    }, 150);
+  });
 }
 
 function startDoingTicker() {
@@ -108,6 +167,7 @@ function renderFriendLinks() {
 
 setGreeting();
 setBackground();
+bindBackgroundResize();
 startDoingTicker();
 renderFriendLinks();
 
