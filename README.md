@@ -10,7 +10,7 @@
 
 ## 技术栈
 
-- Vite 5 - 构建工具
+- Vite 8 - 构建工具
 - 原生 JavaScript - 无框架
 - CSS3 - 样式
 
@@ -18,21 +18,56 @@
 
 ```bash
 # 安装依赖
-yarn
+npm ci
 
 # 启动开发服务器
-yarn dev
+npm run dev
 ```
 
 ## 构建
 
 ```bash
 # 构建生产版本
-yarn build
+npm run build
 
 # 预览构建结果
-yarn preview
+npm run preview
 ```
+
+## 部署
+
+站点采用发布目录模式部署，Web 根目录应始终指向 `$APP_ROOT/current/dist`。
+
+### 首次部署
+
+首次在新服务器上部署时，使用 `scripts/first-deploy.sh` 初始化 Git 工作树、创建首个 release，并切换 `current`：
+
+```bash
+APP_ROOT=/var/www/dogeow.com \
+REPO_URL=git@github.com:<owner>/dogeow.com.git \
+bash scripts/first-deploy.sh
+```
+
+可选环境变量：
+
+- `DEPLOY_BRANCH`：首次部署分支，默认 `main`
+- `KEEP_RELEASES`：保留的旧发布数量，默认 `5`
+- `LOCAL_CONFIG_DIR`：首次部署时本地配置来源目录，支持 `.env*` 和 `.npmrc`
+- `SHARED_CONFIG_DIR`：共享配置目录，默认是 `$APP_ROOT.shared`
+
+### 后续更新部署
+
+首次部署完成后，GitHub self-hosted runner 会在 `APP_ROOT` 这个 Git 工作树内执行更新部署，调用 `scripts/deploy-zero-downtime.sh` 构建新的 release，并原子切换 `current`。
+
+### 共享配置目录
+
+本地配置文件建议放在 `$APP_ROOT.shared`，例如：
+
+- `$APP_ROOT.shared/.env`
+- `$APP_ROOT.shared/.env.production`
+- `$APP_ROOT.shared/.npmrc`
+
+部署脚本会优先从共享配置目录复制这些文件到每个 release。若历史上曾把未跟踪的 `.env*` 或 `.npmrc` 放在 `APP_ROOT` 根目录，更新部署时会自动迁移到共享配置目录，避免后续 `git pull` 与工作树发生冲突。
 
 ## 目录结构
 
@@ -50,6 +85,9 @@ yarn preview
 |   └── utils.js        # 工具函数
 ├── index.html          # HTML 入口
 ├── package.json
+├── scripts/
+│   ├── deploy-zero-downtime.sh
+│   └── first-deploy.sh
 └── README.md
 ```
 

@@ -1,4 +1,4 @@
-# 在服务器上的自托管 Runner 执行，推送 main 后自动部署（本机 git pull + release 构建 + current 原子切换）
+# 在服务器上的自托管 Runner 执行，推送 main 后自动部署（本机 git pull --ff-only + release 构建 + current 原子切换）
 # 前提：在仓库 Settings -> Secrets and variables -> Actions 添加 APP_ROOT
 # Web 服务器站点根目录应指向: $APP_ROOT/current/dist
 name: Deploy (Self-hosted)
@@ -15,7 +15,7 @@ jobs:
       - name: Deploy
         run: |
           cd "$APP_ROOT"
-          git pull
+          git pull --ff-only
           chmod +x scripts/deploy-zero-downtime.sh
           ./scripts/deploy-zero-downtime.sh
         env:
