@@ -1,28 +1,20 @@
 #!/bin/bash
-# 首次服务器部署脚本：初始化 APP_ROOT 仓库工作树，并调用零停机部署脚本完成首个 release。
+# 首次服务器部署脚本：在已手动 clone 的仓库中创建首个 release，并指向 current。
 set -euo pipefail
 
-DEPLOY_BRANCH="${DEPLOY_BRANCH:-main}"
-KEEP_RELEASES="${KEEP_RELEASES:-5}"
+AUTO_DETECTED_APP_ROOT=0
 
 if [ -z "${APP_ROOT:-}" ]; then
-  echo "错误：请设置环境变量 APP_ROOT（站点根目录），例: APP_ROOT=/var/www/dogeow.com REPO_URL=git@github.com:you/repo.git $0" >&2
-  exit 1
+  APP_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd -P)"
+  AUTO_DETECTED_APP_ROOT=1
 fi
 
-if [ -z "${REPO_URL:-}" ]; then
-  echo "错误：请设置环境变量 REPO_URL（仓库地址），例: REPO_URL=git@github.com:you/repo.git" >&2
-  exit 1
-fi
-
-case "$KEEP_RELEASES" in
-  ''|*[!0-9]*)
-    echo "错误：KEEP_RELEASES 必须为非负整数，当前值: $KEEP_RELEASES" >&2
-    exit 1
-    ;;
-esac
-
+RELEASES_DIR="${APP_ROOT}/releases"
+CURRENT_LINK="${APP_ROOT}/current"
 SHARED_CONFIG_DIR="${SHARED_CONFIG_DIR:-${APP_ROOT%/}.shared}"
+RELEASE_ID="$(date +%Y%m%d%H%M%S)"
+NEW_RELEASE="${RELEASES_DIR}/${RELEASE_ID}"
+PENDING_RELEASE="${RELEASES_DIR}/.tmp-${RELEASE_ID}-$$"
 
 log() {
   echo "[first-deploy] $*"
@@ -39,87 +31,118 @@ require_command() {
   fi
 }
 
-dir_has_entries() {
-  local target_dir="$1"
+cleanup_pending_release() {
+  if [ -d "$PENDING_RELEASE" ]; then
+    rm -rf "$PENDING_RELEASE"
+  fi
+}
 
-  if [ ! -d "$target_dir" ]; then
-    return 1
+cleanup_failed_release() {
+  if [ ! -L "$CURRENT_LINK" ] && [ -d "$NEW_RELEASE" ]; then
+    rm -rf "$NEW_RELEASE"
+  fi
+}
+
+on_exit() {
+  local exit_code="$?"
+
+  if [ "$exit_code" -ne 0 ]; then
+    cleanup_pending_release
+    cleanup_failed_release
   fi
 
-  find "$target_dir" -mindepth 1 -print -quit | grep -q .
+  exit "$exit_code"
 }
 
 copy_local_config_files() {
-  local source_dir="$1"
+  local destination="$1"
+  local source_dir
   local file
   local files=()
 
-  shopt -s nullglob
-  files=("$source_dir"/.env* "$source_dir"/.npmrc)
-  shopt -u nullglob
+  for source_dir in "$APP_ROOT" "$SHARED_CONFIG_DIR"; do
+    [ -d "$source_dir" ] || continue
 
-  for file in "${files[@]}"; do
-    [ -f "$file" ] || continue
-    cp -f "$file" "$SHARED_CONFIG_DIR/"
+    shopt -s nullglob
+    files=("$source_dir"/.env* "$source_dir"/.npmrc)
+    shopt -u nullglob
+
+    for file in "${files[@]}"; do
+      [ -f "$file" ] || continue
+      cp -f "$file" "$destination/"
+    done
   done
 }
 
-clone_or_update_repo() {
-  local remote_url=""
+copy_deploy_snapshot() {
+  local destination="$1"
 
-  mkdir -p "$(dirname "$APP_ROOT")"
-
-  if [ -d "$APP_ROOT/.git" ]; then
-    remote_url="$(git -C "$APP_ROOT" remote get-url origin 2>/dev/null || true)"
-    if [ -n "$remote_url" ] && [ "$remote_url" != "$REPO_URL" ]; then
-      die "APP_ROOT 已存在其他仓库：$remote_url"
-    fi
-
-    log "复用已有仓库工作树：$APP_ROOT"
-  else
-    if [ -e "$APP_ROOT" ] && [ ! -d "$APP_ROOT" ]; then
-      die "APP_ROOT 已存在且不是目录：$APP_ROOT"
-    fi
-
-    mkdir -p "$APP_ROOT"
-    if dir_has_entries "$APP_ROOT"; then
-      die "APP_ROOT 已存在且非空，且不是 Git 工作树：$APP_ROOT"
-    fi
-
-    log "克隆仓库到：$APP_ROOT"
-    git clone --branch "$DEPLOY_BRANCH" --single-branch "$REPO_URL" "$APP_ROOT"
-  fi
-
-  git -C "$APP_ROOT" fetch --prune origin "$DEPLOY_BRANCH"
-  git -C "$APP_ROOT" checkout "$DEPLOY_BRANCH"
-  git -C "$APP_ROOT" pull --ff-only origin "$DEPLOY_BRANCH"
+  mkdir -p "$destination"
+  git -C "$APP_ROOT" archive --format=tar HEAD | tar -xf - -C "$destination"
+  copy_local_config_files "$destination"
 }
 
-sync_optional_local_config() {
-  if [ -z "${LOCAL_CONFIG_DIR:-}" ]; then
-    return
-  fi
+build_first_release() {
+  log "构建首个发布目录：$PENDING_RELEASE"
+  copy_deploy_snapshot "$PENDING_RELEASE"
 
+  (
+    cd "$PENDING_RELEASE"
+    npm ci
+    npm run build
+  )
+}
+
+trap 'on_exit' EXIT
+
+require_command git
+require_command tar
+require_command npm
+
+if [ "$AUTO_DETECTED_APP_ROOT" -eq 1 ]; then
+  log "自动识别 APP_ROOT：$APP_ROOT"
+fi
+
+if [ ! -d "$APP_ROOT" ]; then
+  die "APP_ROOT 不存在：$APP_ROOT"
+fi
+
+if ! git -C "$APP_ROOT" rev-parse --is-inside-work-tree >/dev/null 2>&1; then
+  die "APP_ROOT 不是有效的 Git 工作树，请先手动 git clone 仓库到目标目录"
+fi
+
+if [ -e "$CURRENT_LINK" ] || [ -L "$CURRENT_LINK" ]; then
+  die "检测到 current 已存在，首次部署似乎已经完成；后续更新请改用 scripts/deploy-zero-downtime.sh"
+fi
+
+mkdir -p "$RELEASES_DIR"
+
+if find "$RELEASES_DIR" -mindepth 1 -maxdepth 1 -type d -print -quit | grep -q .; then
+  die "检测到已有 release 目录，首次部署脚本只适用于空的 releases 目录"
+fi
+
+if [ -n "${LOCAL_CONFIG_DIR:-}" ]; then
   if [ ! -d "$LOCAL_CONFIG_DIR" ]; then
     die "LOCAL_CONFIG_DIR 不存在：$LOCAL_CONFIG_DIR"
   fi
 
   mkdir -p "$SHARED_CONFIG_DIR"
   log "同步本地配置到共享目录：$SHARED_CONFIG_DIR"
-  copy_local_config_files "$LOCAL_CONFIG_DIR"
-}
 
-require_command git
-require_command tar
-require_command npm
-
-clone_or_update_repo
-sync_optional_local_config
-
-if [ ! -x "$APP_ROOT/scripts/deploy-zero-downtime.sh" ]; then
-  chmod +x "$APP_ROOT/scripts/deploy-zero-downtime.sh"
+  shopt -s nullglob
+  for local_file in "$LOCAL_CONFIG_DIR"/.env* "$LOCAL_CONFIG_DIR"/.npmrc; do
+    [ -f "$local_file" ] || continue
+    cp -f "$local_file" "$SHARED_CONFIG_DIR/"
+  done
+  shopt -u nullglob
 fi
 
-log "开始执行首个发布"
-APP_ROOT="$APP_ROOT" KEEP_RELEASES="$KEEP_RELEASES" "$APP_ROOT/scripts/deploy-zero-downtime.sh"
+log "当前提交：$(git -C "$APP_ROOT" rev-parse --short HEAD)"
+build_first_release
+mv "$PENDING_RELEASE" "$NEW_RELEASE"
+ln -s "$NEW_RELEASE" "$CURRENT_LINK"
+
+log "已创建首个发布：$NEW_RELEASE"
+log "已创建 current -> $NEW_RELEASE"
 log "首次部署完成"
+log "后续更新请使用：$APP_ROOT/scripts/deploy-zero-downtime.sh"

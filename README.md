@@ -40,18 +40,17 @@ npm run preview
 
 ### 首次部署
 
-首次在新服务器上部署时，使用 `scripts/first-deploy.sh` 初始化 Git 工作树、创建首个 release，并切换 `current`：
+首次部署默认是手动流程：先把仓库 clone 到服务器目标目录，再运行 `scripts/first-deploy.sh` 创建首个 release 并切换 `current`。
 
 ```bash
-APP_ROOT=/var/www/dogeow.com \
-REPO_URL=git@github.com:<owner>/dogeow.com.git \
-bash scripts/first-deploy.sh
+git clone git@github.com:<owner>/dogeow.com.git /var/www/dogeow.com
+cd /var/www/dogeow.com/scripts
+./first-deploy.sh
 ```
 
 可选环境变量：
 
-- `DEPLOY_BRANCH`：首次部署分支，默认 `main`
-- `KEEP_RELEASES`：保留的旧发布数量，默认 `5`
+- `APP_ROOT`：站点根目录；如果脚本就在仓库的 `scripts` 目录里执行，可省略
 - `LOCAL_CONFIG_DIR`：首次部署时本地配置来源目录，支持 `.env*` 和 `.npmrc`
 - `SHARED_CONFIG_DIR`：共享配置目录，默认是 `$APP_ROOT.shared`
 
