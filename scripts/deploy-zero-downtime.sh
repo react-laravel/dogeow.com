@@ -104,7 +104,7 @@ copy_local_config_files() {
     [ -d "$source_dir" ] || continue
 
     shopt -s nullglob
-    files=("$source_dir"/.env* "$source_dir"/.npmrc)
+    files=("$source_dir"/.env*)
     shopt -u nullglob
 
     for file in "${files[@]}"; do
@@ -127,7 +127,7 @@ migrate_app_root_config_files() {
   local migrated_any=0
 
   shopt -s nullglob
-  files=("$APP_ROOT"/.env* "$APP_ROOT"/.npmrc)
+  files=("$APP_ROOT"/.env*)
   shopt -u nullglob
 
   for file in "${files[@]}"; do

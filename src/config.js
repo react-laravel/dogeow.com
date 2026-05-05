@@ -19,7 +19,7 @@ export const config = {
 
   // 正在做的事情
   doings: [],
-  doingLink: "https://lab.dogeow.com/project/1",
+  doingLink: "",
 
   // 友情链接
   friendLinks: [],

@@ -64,7 +64,7 @@ copy_local_config_files() {
     [ -d "$source_dir" ] || continue
 
     shopt -s nullglob
-    files=("$source_dir"/.env* "$source_dir"/.npmrc)
+    files=("$source_dir"/.env*)
     shopt -u nullglob
 
     for file in "${files[@]}"; do
@@ -119,22 +119,6 @@ mkdir -p "$RELEASES_DIR"
 
 if find "$RELEASES_DIR" -mindepth 1 -maxdepth 1 -type d -print -quit | grep -q .; then
   die "检测到已有 release 目录，首次部署脚本只适用于空的 releases 目录"
-fi
-
-if [ -n "${LOCAL_CONFIG_DIR:-}" ]; then
-  if [ ! -d "$LOCAL_CONFIG_DIR" ]; then
-    die "LOCAL_CONFIG_DIR 不存在：$LOCAL_CONFIG_DIR"
-  fi
-
-  mkdir -p "$SHARED_CONFIG_DIR"
-  log "同步本地配置到共享目录：$SHARED_CONFIG_DIR"
-
-  shopt -s nullglob
-  for local_file in "$LOCAL_CONFIG_DIR"/.env* "$LOCAL_CONFIG_DIR"/.npmrc; do
-    [ -f "$local_file" ] || continue
-    cp -f "$local_file" "$SHARED_CONFIG_DIR/"
-  done
-  shopt -u nullglob
 fi
 
 log "当前提交：$(git -C "$APP_ROOT" rev-parse --short HEAD)"

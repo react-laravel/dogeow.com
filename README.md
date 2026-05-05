@@ -1,18 +1,17 @@
 # Personal Website Homepage
 
-基于 Vite 的静态个人入口页，作为 DogeOW 的个人网站首页。
+基于 Vite 的静态个人网站入口页。
 
 ## 特性
 
-- 随机背景壁纸
-- 根据时间显示问候语（早上好/中午好/下午好/傍晚好/晚上好/夜深了）
 - 响应式设计，支持移动端和桌面端
+- 根据时间显示问候语（早上好/中午好/下午好/傍晚好/晚上好/夜深了）
+- 随机背景壁纸
 
 ## 技术栈
 
 - Vite 8 - 构建工具
 - 原生 JavaScript - 无框架
-- CSS3 - 样式
 
 ## 开发
 
@@ -43,7 +42,7 @@ npm run preview
 首次部署默认是手动流程：先把仓库 clone 到服务器目标目录，再运行 `scripts/first-deploy.sh` 创建首个 release 并切换 `current`。
 
 ```bash
-git clone git@github.com:<owner>/dogeow.com.git /var/www/dogeow.com
+git clone https://github.com/react-laravel/dogeow.com.git /var/www/dogeow.com
 cd /var/www/dogeow.com/scripts
 ./first-deploy.sh
 ```
@@ -51,7 +50,6 @@ cd /var/www/dogeow.com/scripts
 可选环境变量：
 
 - `APP_ROOT`：站点根目录；如果脚本就在仓库的 `scripts` 目录里执行，可省略
-- `LOCAL_CONFIG_DIR`：首次部署时本地配置来源目录，支持 `.env*` 和 `.npmrc`
 - `SHARED_CONFIG_DIR`：共享配置目录，默认是 `$APP_ROOT.shared`
 
 ### 后续更新部署
@@ -64,9 +62,8 @@ cd /var/www/dogeow.com/scripts
 
 - `$APP_ROOT.shared/.env`
 - `$APP_ROOT.shared/.env.production`
-- `$APP_ROOT.shared/.npmrc`
 
-部署脚本会优先从共享配置目录复制这些文件到每个 release。若历史上曾把未跟踪的 `.env*` 或 `.npmrc` 放在 `APP_ROOT` 根目录，更新部署时会自动迁移到共享配置目录，避免后续 `git pull` 与工作树发生冲突。
+部署脚本会优先从共享配置目录复制这些文件到每个 release。若历史上曾把未跟踪的 `.env*` 放在 `APP_ROOT` 根目录，更新部署时会自动迁移到共享配置目录，避免后续 `git pull` 与工作树发生冲突。
 
 ## 目录结构
 
