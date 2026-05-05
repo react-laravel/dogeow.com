@@ -1,12 +1,20 @@
 // 工具函数
 
+const greetingRanges = [
+  { until: 5, text: "夜深了" },
+  { until: 9, text: "早上好" },
+  { until: 11, text: "上午好" },
+  { until: 13, text: "中午好" },
+  { until: 17, text: "下午好" },
+  { until: 18, text: "傍晚好" },
+  { until: 23, text: "晚上好" },
+];
+
 export function getGreeting(date = new Date()) {
+  if (!(date instanceof Date) || Number.isNaN(date.getTime())) {
+    throw new TypeError("getGreeting requires a valid Date object");
+  }
+
   const hour = date.getHours();
-  if (hour < 5) return "夜深了";
-  if (hour < 9) return "早上好";
-  if (hour < 11) return "上午好";
-  if (hour < 13) return "中午好";
-  if (hour < 17) return "下午好";
-  if (hour < 18) return "傍晚好";
-  return "晚上好";  
+  return greetingRanges.find((range) => hour < range.until).text;
 }
