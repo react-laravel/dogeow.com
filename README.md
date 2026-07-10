@@ -77,8 +77,9 @@ cd /var/www/dogeow.com/scripts
 ├── src/
 │   ├── config.js       # 配置文件
 │   ├── main.js         # 入口脚本
-│   └── styles.css      # 全局样式
-|   └── utils.js        # 工具函数
+│   ├── styles.css      # 全局样式
+│   └── utils.js        # 工具函数
+├── tests/              # 自动化测试
 ├── index.html          # HTML 入口
 ├── package.json
 ├── scripts/

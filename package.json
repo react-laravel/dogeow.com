@@ -2,10 +2,12 @@
   "name": "homepage",
   "version": "0.1.0",
   "private": true,
+  "type": "module",
   "scripts": {
     "dev": "vite --host",
     "build": "vite build --base ./",
     "preview": "vite preview --host",
+    "test": "node --test",
     "format": "prettier --write .",
     "format:check": "prettier --check ."
   },

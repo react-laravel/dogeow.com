@@ -23,13 +23,19 @@ function getBackgroundRequestSize() {
     window.innerHeight || 0,
     document.documentElement.clientHeight || 0,
   );
-  const devicePixelRatio = Math.min(window.devicePixelRatio || 1, BACKGROUND_DPR_CAP);
+  const devicePixelRatio = Math.min(
+    window.devicePixelRatio || 1,
+    BACKGROUND_DPR_CAP,
+  );
   const longestEdge = Math.max(viewportWidth, viewportHeight);
   const targetSize = longestEdge * devicePixelRatio;
 
   return Math.min(
     BACKGROUND_MAX_SIZE,
-    Math.max(BACKGROUND_MIN_SIZE, roundUpToStep(targetSize, BACKGROUND_SIZE_STEP)),
+    Math.max(
+      BACKGROUND_MIN_SIZE,
+      roundUpToStep(targetSize, BACKGROUND_SIZE_STEP),
+    ),
   );
 }
 

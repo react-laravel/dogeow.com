@@ -19,7 +19,9 @@ body {
   margin: 0;
   min-height: 100vh;
   color: var(--text-primary);
-  font-family: "Avenir Next", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+  font-family:
+    "Avenir Next", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei",
+    sans-serif;
   font-size: 14px;
   background-image: var(--page-background);
   background-position: center;
@@ -105,7 +107,9 @@ img {
   padding: 16px;
   border-radius: 6px;
   border: 1px solid transparent;
-  transition: background-color 160ms ease, border-color 160ms ease;
+  transition:
+    background-color 160ms ease,
+    border-color 160ms ease;
 }
 
 .project-card:hover,
@@ -183,7 +187,9 @@ img {
   background: rgba(0, 0, 0, 0.35);
   color: #fff;
   backdrop-filter: blur(8px);
-  transition: background-color 160ms ease, border-color 160ms ease;
+  transition:
+    background-color 160ms ease,
+    border-color 160ms ease;
 }
 
 .wallpaper-button:hover,

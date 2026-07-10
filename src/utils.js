@@ -8,6 +8,7 @@ const greetingRanges = [
   { until: 17, text: "下午好" },
   { until: 18, text: "傍晚好" },
   { until: 23, text: "晚上好" },
+  { until: 24, text: "夜深了" },
 ];
 
 export function getGreeting(date = new Date()) {
