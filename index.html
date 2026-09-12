@@ -1,64 +1,112 @@
 <!doctype html>
 <html lang="zh-CN">
   <head>
-    <meta charset="utf-8">
-    <link rel="icon" href="/favicon.ico">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="theme-color" content="#0f172a">
+    <meta charset="utf-8" />
+    <link rel="icon" href="/favicon.ico" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#0f172a" />
     <meta
       name="description"
-      content="DogeOW 的个人入口页，包含实验室、Canvas、文件夹和其他常用链接。"
-    >
-    <meta property="og:title" content="DogeOW">
+      content="DogeOW 的个人空间，探索实验室与我的世界。"
+    />
+    <meta property="og:title" content="DogeOW" />
     <meta
       property="og:description"
-      content="DogeOW 的个人入口页，包含实验室、Canvas、文件夹和其他常用链接。"
-    >
-    <meta property="og:type" content="website">
-    <meta property="og:url" content="https://dogeow.com">
+      content="DogeOW 的个人空间，探索实验室与我的世界。"
+    />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://dogeow.com" />
     <meta
       property="og:image"
       content="https://upyun.dogeow.com/projects/DogeOW.png"
-    >
-    <link rel="apple-touch-icon" href="/logo192.png">
-    <link rel="manifest" href="/manifest.json">
-    <link rel="stylesheet" href="/src/styles.css">
+    />
+    <link rel="apple-touch-icon" href="/logo192.png" />
+    <link rel="manifest" href="/manifest.json" />
+    <link rel="preconnect" href="https://upyun.dogeow.com" />
+    <link rel="stylesheet" href="/src/styles.css" />
     <title>DogeOW</title>
   </head>
   <body>
+    <div id="wallpaper" class="wallpaper" aria-hidden="true">
+      <div class="wallpaper__layer"></div>
+      <div class="wallpaper__layer"></div>
+    </div>
     <div class="page-shell">
-      <div class="page-overlay"></div>
+      <header class="site-header">
+        <span class="wordmark">DogeOW<span class="wordmark__dot">.</span></span>
+        <a
+          class="github-link"
+          href="https://github.com/dogeow"
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label="GitHub（在新标签页打开）"
+        >
+          <svg
+            width="18"
+            height="18"
+            viewBox="0 0 24 24"
+            fill="currentColor"
+            aria-hidden="true"
+          >
+            <path
+              d="M12 .75a11.25 11.25 0 0 0-3.56 21.92c.56.1.77-.24.77-.54v-2.1c-3.13.68-3.79-1.33-3.79-1.33-.51-1.3-1.25-1.65-1.25-1.65-1.02-.7.08-.69.08-.69 1.13.08 1.72 1.16 1.72 1.16 1 1.72 2.63 1.22 3.27.94.1-.73.39-1.22.71-1.5-2.5-.28-5.13-1.25-5.13-5.57 0-1.23.44-2.23 1.16-3.02-.12-.28-.5-1.43.11-2.98 0 0 .95-.3 3.1 1.15a10.8 10.8 0 0 1 5.63 0c2.15-1.46 3.1-1.15 3.1-1.15.62 1.55.23 2.7.12 2.98.72.8 1.15 1.8 1.15 3.02 0 4.33-2.63 5.29-5.14 5.57.4.35.76 1.03.76 2.08v3.1c0 .3.2.65.78.54A11.25 11.25 0 0 0 12 .75Z"
+            />
+          </svg>
+          <span>GitHub</span
+          ><span class="external-arrow" aria-hidden="true">↗</span>
+        </a>
+      </header>
       <main class="hero">
-        <h1 id="greeting" class="greeting">你好</h1>
+        <div class="hero-intro">
+          <p class="eyebrow">WELCOME TO MY SPACE</p>
+          <h1 id="greeting" class="greeting">你好</h1>
+          <p class="hero-description">工具、实验，还有我的方块世界。</p>
+        </div>
 
         <section class="project-grid" aria-label="常用项目">
           <a
             class="project-card"
             href="https://next.dogeow.com"
+            aria-label="实验室（在新标签页打开）"
             target="_blank"
             rel="noopener noreferrer"
           >
-            <img
-              src="https://next.dogeow.com/80.png"
-              alt="实验室"
-              width="40"
-              height="40"
-            >
-            <span>实验室</span>
+            <span class="project-icon" aria-hidden="true">
+              <span class="project-icon__fallback">D</span>
+              <img
+                src="https://next.dogeow.com/80.png"
+                alt=""
+                width="44"
+                height="44"
+              />
+            </span>
+            <span class="project-copy">
+              <span class="project-title">实验室</span>
+              <span class="project-description">日常工具与小实验</span>
+            </span>
+            <span class="project-arrow" aria-hidden="true">↗</span>
           </a>
           <a
             class="project-card"
             href="https://mc.dogeow.com"
+            aria-label="我的世界（在新标签页打开）"
             target="_blank"
             rel="noopener noreferrer"
           >
-            <img
-              src="https://upyun.dogeow.com/projects/minecraft_grass_block_texture.png!/fw/80"
-              alt="我的世界"
-              width="40"
-              height="40"
-            >
-            <span>我的世界</span>
+            <span class="project-icon" aria-hidden="true">
+              <span class="project-icon__fallback">M</span>
+              <img
+                src="https://upyun.dogeow.com/projects/minecraft_grass_block_texture.png!/fw/80"
+                alt=""
+                width="44"
+                height="44"
+              />
+            </span>
+            <span class="project-copy">
+              <span class="project-title">我的世界</span>
+              <span class="project-description">去方块世界逛一逛</span>
+            </span>
+            <span class="project-arrow" aria-hidden="true">↗</span>
           </a>
         </section>
 
@@ -66,20 +114,65 @@
       </main>
 
       <footer class="site-footer">
-        <p id="wallpaper-info" class="wallpaper-info" hidden></p>
-        <a
-          class="github-icon"
-          href="https://github.com/dogeow"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <img
-            src="https://upyun.dogeow.com/projects/Octocat.svg"
-            alt="GitHub"
-            width="20"
-            height="20"
-          >
-        </a>
+        <div class="wallpaper-controls" id="wallpaper-controls" hidden>
+          <div class="wallpaper-toolbar">
+            <a
+              id="wallpaper-info"
+              class="wallpaper-info"
+              target="_blank"
+              rel="noopener noreferrer"
+              hidden
+            >
+              <svg
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.5"
+                aria-hidden="true"
+              >
+                <rect x="3" y="3" width="18" height="18" rx="3" />
+                <circle cx="8.5" cy="8.5" r="1.5" />
+                <path d="m21 15-5-5L5 21" />
+              </svg>
+              <span id="wallpaper-name" class="wallpaper-name"></span>
+              <span class="external-arrow" aria-hidden="true">↗</span>
+            </a>
+            <button
+              id="change-wallpaper"
+              class="wallpaper-change"
+              type="button"
+              aria-label="换一张壁纸"
+            >
+              <svg
+                class="refresh-icon"
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.7"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                aria-hidden="true"
+              >
+                <path d="M20 7v5h-5M4 17v-5h5" />
+                <path
+                  d="M6.1 7a7 7 0 0 1 11.55-1.2L20 9M4 15l2.35 3.2A7 7 0 0 0 17.9 17"
+                />
+              </svg>
+              <span>换一张</span>
+            </button>
+          </div>
+          <p
+            id="wallpaper-status"
+            class="wallpaper-status"
+            role="status"
+            aria-live="polite"
+            aria-atomic="true"
+          ></p>
+        </div>
         <p id="friend-links" class="friend-links" hidden></p>
         <div class="record-links">
           <a

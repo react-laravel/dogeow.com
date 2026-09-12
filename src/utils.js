@@ -19,3 +19,14 @@ export function getGreeting(date = new Date()) {
   const hour = date.getHours();
   return greetingRanges.find((range) => hour < range.until).text;
 }
+
+export function getBackgroundRequestSize(width, height, devicePixelRatio = 1) {
+  const targetSize = Math.max(width, height) * Math.min(devicePixelRatio, 2);
+  return Math.min(2560, Math.max(960, Math.ceil(targetSize / 160) * 160));
+}
+
+export function pickBackground(names, currentName = "", random = Math.random) {
+  const candidates = names.filter((name) => name !== currentName);
+  if (!candidates.length) return names[0] || "";
+  return candidates[Math.floor(random() * candidates.length)];
+}
