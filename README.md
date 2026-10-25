@@ -109,3 +109,34 @@ const backgroundImages = [
 ### 修改问候语
 
 编辑 `getGreeting()` 函数可自定义问候语逻辑。
+
+## Server C deployment
+
+The public site now runs on `120.26.21.64`; both `dogeow.com` and
+`www.dogeow.com` must point there. The self-hosted runner builds the site and
+uploads only `dist`, not source or build dependencies. Configure repository
+Secrets `C_DEPLOY_SSH_KEY` and `C_DEPLOY_KNOWN_HOSTS` for the dedicated
+`web-deploy` account. The server-side helper is restricted to `homepage` and
+retains only its current release.
+
+The workflow now follows the repository's actual default branch, `master`.
+Manual dispatch defaults to `validate_only=true`: it builds the new source and
+checks SSH plus C HTTPS/assets, but does not upload or replace C's homepage.
+This is intentional for the migration: the first server transfer preserves the
+older live homepage exactly instead of silently publishing newer master content.
+After migration, normal source pushes publish to C. The retired localhost deploy
+scripts exit with an explanation and cannot recreate the old A deployment.
+
+To build/package manually on the runner:
+
+```bash
+npm ci
+npm test
+npm run build
+node scripts/package-runtime.mjs
+bash scripts/deploy-to-c.sh --check-only
+# Publish intentionally: bash scripts/deploy-to-c.sh
+```
+
+Runtime root: `/var/www/homepage/current/dist`. Private server configuration and
+TLS are managed separately and are never included in this public static bundle.

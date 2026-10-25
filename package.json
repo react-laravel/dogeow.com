@@ -9,7 +9,9 @@
     "preview": "vite preview --host",
     "test": "node --test",
     "format": "prettier --write .",
-    "format:check": "prettier --check ."
+    "format:check": "prettier --check .",
+    "package:runtime": "node scripts/package-runtime.mjs",
+    "deploy:c": "bash scripts/deploy-to-c.sh"
   },
   "browserslist": {
     "production": [

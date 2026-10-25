@@ -1,22 +1,54 @@
-# 在服务器上的自托管 Runner 执行，推送 main 后自动部署（本机 git pull --ff-only + release 构建 + current 原子切换）
-# 前提：在仓库 Settings -> Secrets and variables -> Actions 添加 APP_ROOT
-# Web 服务器站点根目录应指向: $APP_ROOT/current/dist
-name: Deploy (Self-hosted)
+name: Deploy homepage to C
 
 on:
   push:
-    branches: [main]
+    branches: [master]
   workflow_dispatch:
+    inputs:
+      validate_only:
+        description: Build and verify C without replacing its current homepage
+        required: true
+        default: true
+        type: boolean
+
+permissions:
+  contents: read
+
+concurrency:
+  group: deploy-homepage-c
+  cancel-in-progress: false
 
 jobs:
   deploy:
     runs-on: self-hosted
+    timeout-minutes: 20
+    env:
+      HOME: /var/www
     steps:
-      - name: Deploy
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 24.16.0
+          cache: npm
+      - name: Install locked build dependencies
+        run: npm ci
+      - name: Test and build static homepage
         run: |
-          cd "$APP_ROOT"
-          git pull --ff-only
-          chmod +x scripts/deploy-zero-downtime.sh
-          ./scripts/deploy-zero-downtime.sh
+          npm test
+          npm run build
+          node scripts/package-runtime.mjs
+          du -sh .deploy-runtime
+      - name: Validate or publish C
         env:
-          APP_ROOT: ${{ secrets.APP_ROOT }}
+          VALIDATE_ONLY: ${{ github.event_name == 'workflow_dispatch' && inputs.validate_only }}
+          C_DEPLOY_SSH_KEY: ${{ secrets.C_DEPLOY_SSH_KEY }}
+          C_DEPLOY_KNOWN_HOSTS: ${{ secrets.C_DEPLOY_KNOWN_HOSTS }}
+        run: |
+          if [ "$VALIDATE_ONLY" = true ]; then
+            bash scripts/deploy-to-c.sh --check-only
+          else
+            bash scripts/deploy-to-c.sh
+          fi
+      - name: Remove temporary upload bundle
+        if: always()
+        run: rm -rf .deploy-runtime

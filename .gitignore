@@ -34,3 +34,6 @@ yarn-error.log*
 
 # AI
 .claude
+
+# Server C upload bundle (not source control)
+.deploy-runtime/
