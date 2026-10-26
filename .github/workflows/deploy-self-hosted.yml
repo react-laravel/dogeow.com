@@ -4,12 +4,6 @@ on:
   push:
     branches: [master]
   workflow_dispatch:
-    inputs:
-      validate_only:
-        description: Build and verify C without replacing its current homepage
-        required: true
-        default: true
-        type: boolean
 
 permissions:
   contents: read
@@ -20,10 +14,8 @@ concurrency:
 
 jobs:
   deploy:
-    runs-on: self-hosted
+    runs-on: ubuntu-24.04
     timeout-minutes: 20
-    env:
-      HOME: /var/www
     steps:
       - uses: actions/checkout@v5
       - uses: actions/setup-node@v5
@@ -38,17 +30,13 @@ jobs:
           npm run build
           node scripts/package-runtime.mjs
           du -sh .deploy-runtime
-      - name: Validate or publish C
+      - name: Validate the unchanged C homepage
         env:
-          VALIDATE_ONLY: ${{ github.event_name == 'workflow_dispatch' && inputs.validate_only }}
           C_DEPLOY_SSH_KEY: ${{ secrets.C_DEPLOY_SSH_KEY }}
           C_DEPLOY_KNOWN_HOSTS: ${{ secrets.C_DEPLOY_KNOWN_HOSTS }}
-        run: |
-          if [ "$VALIDATE_ONLY" = true ]; then
-            bash scripts/deploy-to-c.sh --check-only
-          else
-            bash scripts/deploy-to-c.sh
-          fi
+        # C serves the original April homepage. CI migration must not publish
+        # the newer master design on push or through a dispatch parameter.
+        run: bash scripts/deploy-to-c.sh --check-only
       - name: Remove temporary upload bundle
         if: always()
         run: rm -rf .deploy-runtime
